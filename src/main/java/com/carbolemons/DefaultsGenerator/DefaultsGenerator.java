@@ -90,26 +90,20 @@ class DefaultsGenerator {
         }
         break;
         default:
-        final String uOS = System.getProperty("os.name").contains("Windows") ? "%appdata%/" : "~/";
         System.out.println("YOU HAVE MADE AN ARGUMENT ERROR. CHECK YOUR ARGUMENTS TO SEE IF THEY ARE VALID");
-        System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets 1.15.json");
-        System.out.println("the example above will generate the full sound directories for every sound. you can make exclusion based on words like below");
-        System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets 1.15.json cow chicken pig item");
-        System.out.println("the example above will exclude chickens, cows, pigs, and all items. if you are unsure on what to write, check the minecraft wiki, or generate a full make file and look at the paths");
-        System.out.println("ex: java -jar DefaultsGenerator.jar -generate ./make-directories.txt "+uOS+".minecraft/assets 1.15.json YOURRESOURCEPACK/assets/");
-        System.out.println("The -generate flag lets the JAR know you have already decided on what sounds you want");
+        System.out.println("Please run the jar without any parameters to see the examples.");
         break;
       }
     } else {
       final String uOS = System.getProperty("os.name").contains("Windows") ? "%appdata%/" : "~/";
       System.out.println(" //This is DefaultsGenerator! It will generate the sounds you want for your resourcepack!//");
       System.out.println("-Made by Carbolemons.| carbolemons.com github.com/Carbolemons\n");
-      System.out.printf("Usage:\njava -jar DefaultsGenerator.jar [mode.-make|-generate] [path to makefile|path to .json config from assets folder] [(entity exclusions)|] [X|.minecraft installation path] [X|path to resourcepack]\n\nclear");
-      System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets/1.15.json");
+      System.out.printf("Usage:\njava -jar DefaultsGenerator.jar [mode.-make|-generate] [path to makefile|path to .json config from assets folder] [(entity exclusions)|] [X|path to resourcepack]\n\nclear");
+      System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets/indexes/1.15.json");
       System.out.println("the example above will generate the full sound directories for every sound. you can make exclusion based on words like below");
-      System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets/1.15.json cow chicken pig item");
+      System.out.println("ex: java -jar DefaultsGenerator.jar -make "+uOS+".minecraft/assets/indexes/1.15.json cow chicken pig item");
       System.out.println("the example above will exclude chickens, cows, pigs, and all items. if you are unsure on what to write, check the minecraft wiki, or generate a full make file and look at the paths");
-      System.out.println("ex: java -jar DefaultsGenerator.jar -generate ./make-directories.txt "+uOS+".minecraft/assets/1.15.json "+uOS+".minecraft YOURRESOURCEPACK/assets/");
+      System.out.println("ex: java -jar DefaultsGenerator.jar -generate ./make-directories.txt "+uOS+".minecraft/assets/indexes/1.15.json YOURRESOURCEPACK/assets/");
       System.out.println("The -generate flag lets the JAR know you have already decided on what sounds you want");
     }
   }
