@@ -16,7 +16,7 @@ class DefaultsGenerator {
         case "-m":
         case "-make":
         // args[1]
-        final JSONParser parser = new JSONParser();
+        JSONParser parser = new JSONParser();
         try{
            final String asset_path = args[1];
            final Object obj = parser.parse(new FileReader(asset_path));
@@ -51,6 +51,17 @@ class DefaultsGenerator {
         final ArrayList<String> mdirectories = new ArrayList<String>();
         mdirectories.addAll(Files.readAllLines(new File(args[1]).toPath(), Charset.defaultCharset()));
         //for(String mpath : mdirectories) System.out.println(mpath);
+        JSONParser gparser = new JSONParser();
+        try{
+           final String asset_path = args[2];
+           final Object obj = gparser.parse(new FileReader(asset_path));
+           final JSONObject jsonObjectFull = (JSONObject) obj;
+           final JSONObject jsonObject = (JSONObject) jsonObjectFull.get("objects");
+           final ArrayList<String> paths = new ArrayList<String>();
+           
+        }catch(final ParseException pe) {
+           System.out.println(pe);
+        }
         break;
         default:
         final String uOS = System.getProperty("os.name").contains("Windows") ? "%appdata%/" : "~/";
