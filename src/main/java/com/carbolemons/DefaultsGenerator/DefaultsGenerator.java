@@ -8,6 +8,11 @@ import java.nio.charset.*;
 import java.nio.file.*;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 class DefaultsGenerator {
   public static void main(final String[] args) throws FileNotFoundException, IOException {
@@ -24,13 +29,14 @@ class DefaultsGenerator {
            final JSONObject jsonObject = (JSONObject) jsonObjectFull.get("objects");
            final ArrayList<String> paths = new ArrayList<String>();
            for(final Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
-             final String key = (String) iterator.next();
+            Object next_iteration =  iterator.next();            
+            final String key = (String) next_iteration;
              try{
-             if(!paths.contains(key.substring(0,key.lastIndexOf('/')))){
-               if(key.contains("sounds"))paths.add(key.substring(0,key.lastIndexOf('/')));
-             }
+              if(key.contains("sounds"))paths.add(key);
+               //System.out.println(next_iteration);
             } catch(final java.lang.StringIndexOutOfBoundsException e){
-              if(key.contains("sounds"))paths.add(key.substring(0,key.lastIndexOf('/')));
+              if(key.contains("sounds"))paths.add(key);
+              //System.out.println(next_iteration);
             }
             }
             for(int i = 2; i < args.length; i++){
@@ -38,6 +44,7 @@ class DefaultsGenerator {
               paths.removeIf(s -> s.contains(exclusion));
             }
             paths.remove("minecraft");
+            paths.remove("minecraft/sounds.json");
             for (final String path : paths) System.out.println(path);
             final PrintWriter pw = new PrintWriter(new FileOutputStream("make-directories.txt"));
             for (final String path : paths) pw.println(path);
@@ -48,17 +55,36 @@ class DefaultsGenerator {
         break;
         case "-g":
         case "-generate":
+        final String uuOS = System.getProperty("os.name").contains("Windows") ? "%appdata%/" : "/home/"+System.getProperty("user.name")+"/";
         final ArrayList<String> mdirectories = new ArrayList<String>();
         mdirectories.addAll(Files.readAllLines(new File(args[1]).toPath(), Charset.defaultCharset()));
         //for(String mpath : mdirectories) System.out.println(mpath);
         JSONParser gparser = new JSONParser();
         try{
            final String asset_path = args[2];
+           final String resource_path = args[3];
            final Object obj = gparser.parse(new FileReader(asset_path));
            final JSONObject jsonObjectFull = (JSONObject) obj;
            final JSONObject jsonObject = (JSONObject) jsonObjectFull.get("objects");
            final ArrayList<String> paths = new ArrayList<String>();
-           
+           HashMap<String,String> khashes = new HashMap<String,String>();
+           for(final Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+            final String key = (String) iterator.next();
+            if(!mdirectories.contains(key))continue;
+            JSONObject current_key_value = (JSONObject) jsonObject.get(key);
+            String current_hash = current_key_value.get("hash").toString();
+            khashes.put(key, current_key_value.get("hash").toString());
+            try{
+            File source = new File(uuOS+".minecraft/assets/objects/"+current_hash.substring(0,2)+"/"+current_hash);
+            File dest = new File(resource_path+key);
+            dest.getParentFile().mkdirs();
+            Files.copy(source.toPath() , dest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            //System.out.println(key + " has hash: " + current_key_value.get("hash"));
+            }catch(final FileNotFoundException err){
+              System.out.println("File/Directory not found. Aborting");
+              break;
+            }
+            }
         }catch(final ParseException pe) {
            System.out.println(pe);
         }
